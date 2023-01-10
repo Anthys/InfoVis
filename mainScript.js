@@ -72,7 +72,7 @@ function retrieveCo2Data(country, callback) {
 let parseDate = d3.timeParse("%Y");
 
 var margin = { top: 50, right: 50, bottom: 50, left: 50 },
-  width = 1150 / 2,
+  width = 850,
   height = 800 - margin.top - margin.bottom;
 
 var svg = d3.select("#container-left").append("svg");
@@ -90,7 +90,7 @@ let loadedData,
   currentYear = new Date("2018");
 
 google.charts.load("current", {
-  packages: ["geochart"],
+  packages: ["geochart", 'corechart'],
 });
 google.charts.setOnLoadCallback(loadData);
 
@@ -146,6 +146,11 @@ function loadData() {
       consumption_co2: +d.consumption_co2,
       consumption_co2_per_capita: +d.consumption_co2_per_capita,
       consumption_co2_per_gdp: +d.consumption_co2_per_gdp,
+      cement_co2: +d.cement_co2,
+      coal_co2: +d.coal_co2,
+      flaring_co2: +d.flaring_co2,
+      oil_co2: +d.oil_co2,
+      other_industry_co2: +d.other_industry_co2
     }))
     .get(function (data) {
       // data
@@ -293,15 +298,15 @@ document
     document.getElementById("info-window").style.display = "none";
   });
 
-pieIds = ["", "", "", ""];
+pieIds = ["", ""];
 
 function getEmptyPieId() {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 1; i++) {
     if (pieIds[i] == "") {
       return i;
     }
   }
-  return 3;
+  return 1;
 }
 
 function addPie(countryData) {
@@ -312,22 +317,55 @@ function addPie(countryData) {
   pieIds[currentIdx] = countryData;
   console.log(pieIds);
   let child = document.getElementById("pieGrid").children[currentIdx];
-  let newChild = document.getElementById("pieTemplate").cloneNode(true);
-  newChild.setAttribute("id", "pie" + countryData);
-  newChild.querySelector("p").innerHTML = countryData + " piechart placeholder";
-  let b = document.createElement("button");
-  b.setAttribute("id", "close-button");
-  newChild.appendChild(b);
-  newChild
-    .querySelector("#close-button")
-    .addEventListener("click", function () {
-      pieIds[currentIdx] = "";
-      let n = document.getElementById("pieTemplate").cloneNode(true);
-      n.style.display = "inline";
-      document.getElementById("pieGrid").replaceChild(n, newChild);
-    });
-  newChild.style.display = "inline";
-  document.getElementById("pieGrid").replaceChild(newChild, child);
+
+  var data = loadedData.filter((d) => {
+    return d.year == currentYear;
+  });
+  data = data.filter(d => {
+    return d.country == countryData;
+  });
+  let header = ["Domain", "Co2"];
+  data = data.map(d => {
+    return [
+      ["Cement", d["cement_co2"]],
+      ["Coal", d["coal_co2"]],
+      ["Flaring", d["flaring_co2"]],
+      ["Oil", d["oil_co2"]],
+      ["Other industry", d["other_industry_co2"]]
+    ];
+  })[0];
+  var out = [header];
+  out = out.concat(data);
+
+  var data = google.visualization.arrayToDataTable(out);
+
+  var options = {
+    title: 'Piechart for ' + countryData,
+    legend: 'none'
+  };
+
+  var chart = new google.visualization.PieChart(child);
+
+  chart.draw(data, options);
+
+
+
+  //   let newChild = document.getElementById("pieTemplate").cloneNode(true);
+  //   newChild.setAttribute("id", "pie" + countryData);
+  //   newChild.querySelector("p").innerHTML = countryData + " piechart placeholder";
+  //   let b = document.createElement("button");
+  //   b.setAttribute("id", "close-button");
+  //   newChild.appendChild(b);
+  //   newChild
+  //     .querySelector("#close-button")
+  //     .addEventListener("click", function () {
+  //       pieIds[currentIdx] = "";
+  //       let n = document.getElementById("pieTemplate").cloneNode(true);
+  //       n.style.display = "inline";
+  //       document.getElementById("pieGrid").replaceChild(n, newChild);
+  //     });
+  //   newChild.style.display = "inline";
+  //   document.getElementById("pieGrid").replaceChild(newChild, child);
 }
 function drawRegionsMap(data) {
   let chartData = google.visualization.arrayToDataTable(data);

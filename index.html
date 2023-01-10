@@ -22,7 +22,7 @@
     .container-grid {
       display: grid;
       margin-top: 20px;
-      grid-template-columns: 48% 48%;
+      grid-template-columns: 98%;
       grid-row: auto auto;
       grid-column-gap: 20px;
       grid-row-gap: 20px;
@@ -167,19 +167,16 @@
     </div>
     <div id="container-rows" style="display: flex; flex-direction: column">
       <div id="container-sidebyside" style="display: flex; align-items: center">
-        <div id="container-left" style="width: 50%; height: 90vh">
-          <div id="regions_div" style="margin-top: 150px"></div>
+        <div id="container-left" style="width: 75%; height: 90vh">
+          <div id="regions_div" style="margin-top: 150px; height: 60vh;"></div>
         </div>
         <div
           id="right-window"
-          style="width: 50%; background-color: rgb(91, 91, 214); height: 97vh"
-        >
+          style="width: 25%; height: 97vh">
           <div id="infoChild">Piechart grid</div>
           <div id="pieGrid" class="container-grid">
-            <div class="pie">A</div>
-            <div class="pie">B</div>
-            <div class="pie">C</div>
-            <div class="pie">D</div>
+            <div class="pie">Click on a country</div>
+            <div class="pie">Click on a country</div>
           </div>
         </div>
       </div>
@@ -205,6 +202,6 @@
       <p></p>
     </div>
 
-    <script type="text/javascript" src="./mainScript.js?n=1"></script>
+    <script type="text/javascript" src="./mainScript.js?n=2"></script>
   </body>
 </html>
